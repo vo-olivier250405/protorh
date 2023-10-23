@@ -1,12 +1,12 @@
 '''
-Gestion de la transformatio selon Burrows-Wheeler (BWT)
+Gestion de la transformation selon Burrows-Wheeler (BWT).
 '''
 
 def transform_bwt(data: str) -> str:
     '''
     Applique la transformation Burrows-Wheeler (BWT) à une séquence de données.
     Args:
-        data: La séquence de données à transformer.
+        data (str): La séquence de données à transformer.
     Returns:
         str: La séquence transformée.
         int: Clé permettant la restauration de la séquence de données.
@@ -51,8 +51,8 @@ def inverse_bwt(transformed_data: str, key: int) -> str:
     Restaure une séquence de données ayant subie une transformation
     Burrows-Wheeler (BWT).
     Args:
-        transformed_data: La séquence de données à restaurer.
-        key: Clé générée lors de la transformation et permettant la
+        transformed_data (str): La séquence de données à restaurer.
+        key (int): Clé générée lors de la transformation et permettant la
         restauration de la séquence de données.
     Returns:
         str: La séquence restaurée.
