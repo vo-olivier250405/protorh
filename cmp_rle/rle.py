@@ -3,7 +3,6 @@ Ce module permet de coder et de décoder des chaines de caractères à
 l'aide de l'algorithme Run-Length Encoding
 """
 
-
 def encode_rle(data) -> str:
     """
     Cette fonction prend une chaîne de caractères en entrée. Elle renvoie une
@@ -25,6 +24,8 @@ def encode_rle(data) -> str:
 
         # Si on change de lettre, on rajoute la lettre précédée de son nombre
         # d'occurence
+        # On rajoute des délimiteurs afin de pouvoir distinguer
+        #  le nombre d'occurence et les chiffres (considérés comme caractères)
         res += f"{str(count)}/{temp[index]}|"
         index += 1
     return res
