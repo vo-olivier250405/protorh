@@ -48,6 +48,16 @@ def compress(name: str, file_add: str) -> None:
     return None
 
 
+def uncompress(name: str) -> None:
+    """
+    Fonction qui décomppresse l'archive
+    """
+    file = tarfile.open(name)
+    file.extractall(f"./{name[:8]}")
+    print("Décompréssé(s): ", file.getnames())
+    file.close()
+
+
 data = open_file(argv[1])
 coded = encode_rle(data=data)
 decoded = decode_rle(encoded_data=coded)
@@ -56,9 +66,6 @@ rewrite_file(filter_txt(coded), argv[1])
 
 # Compresse
 compress("test.tar.gz", "cmp_rle/test.txt")
-
 # Décompresse
-# folder = tarfile.open("test.tar.gz", "r")
-#
-# extr = folder.extractfile("cmp_rle/test.txt")
-# rewrite_file(decoded, "cmp_rle/test.txt")
+uncompress("test.tar.gz")
+rewrite_file(decoded, "test.tar/cmp_rle/test.txt")
