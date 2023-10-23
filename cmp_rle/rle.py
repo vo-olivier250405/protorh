@@ -25,7 +25,7 @@ def encode_rle(data) -> str:
 
         # Si on change de lettre, on rajoute la lettre précédée de son nombre
         # d'occurence
-        res += str(count) + temp[index]
+        res += f"{str(count)}/{temp[index]}|"
         index += 1
     return res
 
@@ -39,15 +39,12 @@ def decode_rle(encoded_data) -> str:
     temp: str = "" + encoded_data
     num: str = ""
     res: str = ""
-    for letter in temp:
-        # Teste si la valeur est un chiffre
-        if not letter.isdigit():
-            # Si non, on ajoute num fois la lettre dans la variable résultat
-            for _ in range(int(num)):
-                res += letter
-            # Remet la chaine de caractère à zéro.
+    for i in range(len(temp)-1):
+       # Vérifie si le caractère suivant n'est pas un délimiteur
+       # et ajoute les valeurs
+        if temp[i].isdigit() and temp[i + 1] != "|":
+            num += temp[i]
+        elif temp[i] == "/":
+            res += temp[i + 1] * int(num)
             num = ""
-        else:
-            # Stocke les chiffres pour les convertir en nombre
-            num += letter
     return res
