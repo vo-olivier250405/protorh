@@ -31,7 +31,8 @@ def transform_bwt(data):
     # Parcourt la liste triée bwt pour récupérer la dernière lettre de chaque
     # rotation
     output = ''
-    # Parcours bwt
+    # Parcourt la liste bwt pour récupérer la dernière lettre de chaque
+    # rotation
     for i in range(len(bwt)):
         # Récupère la dernière lettre de la rotation à l'index i et l'ajoute à
         # la variable de sortie
