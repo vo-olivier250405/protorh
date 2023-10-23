@@ -1,4 +1,8 @@
-def transform_bwt(data):
+'''
+Gestion de la transformatio selon Burrows-Wheeler (BWT)
+'''
+
+def transform_bwt(data: str) -> str:
     '''
     Applique la transformation Burrows-Wheeler (BWT) à une séquence de données.
     Args:
@@ -34,15 +38,15 @@ def transform_bwt(data):
     output = ''
     # Parcourt la liste bwt pour récupérer la dernière lettre de chaque
     # rotation
-    for i in range(len(bwt)):
+    for rotation in bwt:
         # Récupère la dernière lettre de la rotation à l'index i et l'ajoute à
         # la variable de sortie
-        output = output + bwt[i][-1]
+        output = output + rotation
     # Retourne la séquence transformée ainsi que la clé
     return output, bwt.index(data)
 
 
-def inverse_bwt(transformed_data, key):
+def inverse_bwt(transformed_data: str, key: int) -> str:
     '''
     Restaure une séquence de données ayant subie une transformation
     Burrows-Wheeler (BWT).
@@ -62,7 +66,7 @@ def inverse_bwt(transformed_data, key):
     indexes_chars = []
     for index, char in enumerate(transformed_data_copy):
         indexes_chars.append((index, char))
-    
+
     # Trie la liste de tuples par ordre alphabétique et par index
     indexes_chars = sorted(indexes_chars, key=lambda pair: pair[1])
 

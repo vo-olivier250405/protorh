@@ -2,9 +2,9 @@
 
 ## Prototypes
 
-### Transformtation
+### Transformation
 ```py
-def transform_bwt(data):
+def transform_bwt(data: str) -> str:
 ```
 - **Entrée:** Séquence de données à transformer
 - **Sortie:** Séquence de données transformée et clé
@@ -16,7 +16,7 @@ transform_bwt('banana') -> ('nnbaaa', 3)
 
 ### Restauration
 ```py
-def inverse_bwt(transformed_data, key):
+def inverse_bwt(transformed_data: str, key: int) -> str:
 ```
 - **Entrée:** Séquence de données à restaurer
 - **Sortie:** Séquence de données restaurée
