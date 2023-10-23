@@ -3,6 +3,7 @@ Ce module permet de coder et de décoder des chaines de caractères à
 l'aide de l'algorithme Run-Length Encoding
 """
 
+
 def encode_rle(data) -> str:
     """
     Cette fonction prend une chaîne de caractères en entrée. Elle renvoie une
@@ -40,9 +41,9 @@ def decode_rle(encoded_data) -> str:
     temp: str = "" + encoded_data
     num: str = ""
     res: str = ""
-    for i in range(len(temp)-1):
-       # Vérifie si le caractère suivant n'est pas un délimiteur
-       # et ajoute les valeurs
+    for i in range(len(temp) - 1):
+        # Vérifie si le caractère suivant n'est pas un délimiteur
+        # et ajoute les valeurs
         if temp[i].isdigit() and temp[i + 1] != "|":
             num += temp[i]
         elif temp[i] == "/":
