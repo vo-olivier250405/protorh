@@ -8,6 +8,18 @@ import tarfile
 from base64 import b64encode
 from cmp_rle.rle import encode_rle, decode_rle
 
+# data = open_file(argv[1])
+# coded = encode_rle(data=data)
+# decoded = decode_rle(encoded_data=coded)
+#
+# rewrite_file(filter_txt(coded), argv[1])
+#
+# # Compresse
+# compress("test.tar.gz", "cmp_rle/test.txt")
+# # Décompresse
+# uncompress("test.tar.gz")
+# rewrite_file(decoded, "test.tar/cmp_rle/test.txt")
+
 
 def open_file(name: str) -> str:
     """
@@ -96,15 +108,5 @@ def main() -> None:
         print(f"\x1b[31mErreur: \x1b[0mArgument {argv[2]} non valide.")
     return None
 
+
 main()
-# data = open_file(argv[1])
-# coded = encode_rle(data=data)
-# decoded = decode_rle(encoded_data=coded)
-#
-# rewrite_file(filter_txt(coded), argv[1])
-#
-# # Compresse
-# compress("test.tar.gz", "cmp_rle/test.txt")
-# # Décompresse
-# uncompress("test.tar.gz")
-# rewrite_file(decoded, "test.tar/cmp_rle/test.txt")
