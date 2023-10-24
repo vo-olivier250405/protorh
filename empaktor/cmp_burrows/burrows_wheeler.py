@@ -2,7 +2,7 @@
 Gestion de la transformation selon Burrows-Wheeler (BWT).
 '''
 
-def transform_bwt(data: str) -> str:
+def transform_bwt(data: str) -> (str, int):
     '''
     Applique la transformation Burrows-Wheeler (BWT) à une séquence de données.
     Args:

@@ -7,7 +7,7 @@ from collections import Counter
 
 
 class Node:
-    def __init__(self, char, frequency):
+    def __init__(self, char: str, frequency: dict):
         self.char = char
         self.frequency = frequency
         self.left_child = None
@@ -21,7 +21,7 @@ class Node:
         return self.frequency < other.frequency
 
 
-def build_huffman_tree(frequency_table):
+def build_huffman_tree(frequency_table: dict) -> Node:
     '''
     Génère un arbre de huffman correspondant à la table de fréquences entrée en
     paramètre.
@@ -121,7 +121,7 @@ def display_huffman_tree(node, indent="", last=True):
         display_huffman_tree(node.right_child, indent, True)
 
 
-def compress_data(data: str) -> str:
+def compress_data(data: str) -> (str, Node):
     '''
     Encode une séquence de données en utilisant l'algorithme de codage de
     Huffman.
@@ -129,13 +129,12 @@ def compress_data(data: str) -> str:
         data (str): Séquence de données à encoder.
     Return:
         str: Séquence de données encodée.
+        Node: Racine de l'arbre binaire utilisé
     '''
 
     # Construction de la table de fréquences des caractères présents dans la
     # séquence à encoder
     frequency_table = build_frequency_table(data)
-
-    print(frequency_table)
 
     # Construction de l'arbre de Huffman à partir de la table de fréquences
     tree = build_huffman_tree(frequency_table)
@@ -150,4 +149,21 @@ def compress_data(data: str) -> str:
     for char in data:
         output = output + encoded_data[char]
     # Retourne la séquence encodée
-    return output
+    return output, tree
+
+
+def decompress_data(compressed_data: str, root: Node) -> str:
+    decompressed_data = ''
+    current_node = root
+
+    for bit in compressed_data:
+        if (bit == '0'):
+            current_node = current_node.left_child
+        else:
+            current_node = current_node.right_child
+        
+        if (current_node.char is not None):
+            decompressed_data = decompressed_data + current_node.char
+            current_node = root
+
+    return decompressed_data

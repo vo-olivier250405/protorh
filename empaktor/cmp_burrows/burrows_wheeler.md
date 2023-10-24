@@ -1,10 +1,8 @@
 # Burrows-Wheeler Transform
 
-## Prototypes
-
-### Transformation
+## Transformation
 ```py
-def transform_bwt(data: str) -> str:
+def transform_bwt(data: str) -> (str, int)
 ```
 - **Entrée:** Séquence de données à transformer
 - **Sortie:** Séquence de données transformée et clé
@@ -14,9 +12,9 @@ def transform_bwt(data: str) -> str:
 transform_bwt('banana') -> ('nnbaaa', 3)
 ```
 
-### Restauration
+## Restauration
 ```py
-def inverse_bwt(transformed_data: str, key: int) -> str:
+def inverse_bwt(transformed_data: str, key: int) -> str
 ```
 - **Entrée:** Séquence de données à restaurer
 - **Sortie:** Séquence de données restaurée
