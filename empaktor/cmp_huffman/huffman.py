@@ -157,12 +157,12 @@ def decompress_data(compressed_data: str, root: Node) -> str:
     current_node = root
 
     for bit in compressed_data:
-        if (bit == '0'):
+        if bit == '0':
             current_node = current_node.left_child
         else:
             current_node = current_node.right_child
-        
-        if (current_node.char is not None):
+
+        if current_node.char is not None:
             decompressed_data = decompressed_data + current_node.char
             current_node = root
 
