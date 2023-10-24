@@ -5,8 +5,10 @@ Module qui va compresser les fichiers à l'aide d'une des 3 méthodes.
 from sys import argv
 from os import listdir
 import tarfile
-from base64 import b64encode
+# from base64 import b64encode
 from cmp_rle.rle import encode_rle, decode_rle
+from cmp_burrows import burrows_wheeler
+from cmp_huffman import huffman
 
 # data = open_file(argv[1])
 # coded = encode_rle(data=data)
@@ -92,10 +94,20 @@ def get_files(argvs: list) -> list:
     return file_add
 
 
-def main() -> None:
+def get_method(method_name: str) -> function:
+    """
+    Renvoi le nom de la méthode de compression
+    """
+    return {"rle": [encode_rle, decode_rle],
+            "huffman": [huffman],
+            "burrows_wheeler": [burrows_wheeler]}[method_name]
+
+
+def main(method: str) -> None:
     """
     Lance le main pour permettre de décomprésser ou compresser
     """
+    print(method)
     if argv[2] == "--compression":
         compress(argv[1], get_files(argv))
     elif argv[2] == "--décompression":
@@ -109,4 +121,4 @@ def main() -> None:
     return None
 
 
-main()
+print(get_method(argv[3]))
