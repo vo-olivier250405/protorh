@@ -3,6 +3,7 @@ Module qui va compresser les fichiers à l'aide d'une des 3 méthodes.
 """
 
 from sys import argv
+from os import listdir
 import tarfile
 from base64 import b64encode
 from cmp_rle.rle import encode_rle, decode_rle
@@ -47,7 +48,7 @@ def compress(name: str, file_add: list) -> None:
         print(f"\nCompression de: {files}...")
         coded = encode_rle(data=open_file(files))
         decoded = decode_rle(encoded_data=coded)
-        rewrite_file(filter_txt(coded), files)
+        rewrite_file(coded, files)
         temp.add(files)
         rewrite_file(decoded, files)
         # temp.add(rewrite_file(filter_txt(coded), files))
@@ -62,10 +63,11 @@ def uncompress(name: str) -> None:
     """
     print(f"\nDécompression de {name}...")
     file = tarfile.open(name)
-    file.extractall(f"./{name[:8]}")
+    file.extractall(f"./{name[:7]}")
     print(f"Décompression de {name}: [\x1b[32mOK\x1b[0m]")
     print(f"Éléments décompréssé(s): {file.getnames()}")
     file.close()
+    return f"./{name[:7]}"
 
 
 def get_files(argvs: list) -> list:
@@ -77,11 +79,24 @@ def get_files(argvs: list) -> list:
         file_add.append(argvs[i])
     return file_add
 
-if argv[2] == "--compression":
-    compress(argv[1], get_files(argv))
-else:
-    print(f"\x1b[31mErreur: \x1b[0mArgument {argv[2]} non valide.")
-# nom_archive.tar.gz --compression nom_algorithme fichier1 fichier2 fichier3 ...
+
+def main() -> None:
+    """
+    Lance le main pour permettre de décomprésser ou compresser
+    """
+    if argv[2] == "--compression":
+        compress(argv[1], get_files(argv))
+    elif argv[2] == "--décompression":
+        path = uncompress(argv[1])
+        for file in listdir(path):
+            data = open_file(f"{path}/{file}")
+            decoded = decode_rle(encoded_data=data)
+            rewrite_file(decoded, f"{path}/{file}")
+    else:
+        print(f"\x1b[31mErreur: \x1b[0mArgument {argv[2]} non valide.")
+    return None
+
+main()
 # data = open_file(argv[1])
 # coded = encode_rle(data=data)
 # decoded = decode_rle(encoded_data=coded)
