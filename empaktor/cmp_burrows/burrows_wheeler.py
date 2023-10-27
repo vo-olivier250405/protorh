@@ -32,7 +32,7 @@ def transform_bwt(data: str) -> (str, int):
 
     # Trie la liste bwt
     bwt = sorted(bwt)
-
+    print(bwt)
     # Initialise une chaîne de caractères vide pour stocker la séquence
     # transformée
     output = ''
@@ -41,10 +41,9 @@ def transform_bwt(data: str) -> (str, int):
     for rotation in bwt:
         # Récupère la dernière lettre de la rotation à l'index i et l'ajoute à
         # la variable de sortie
-        output = output + rotation
+        output = output + rotation[-1]
     # Retourne la séquence transformée ainsi que la clé
     return output, bwt.index(data)
-
 
 def inverse_bwt(transformed_data: str, key: int) -> str:
     '''
@@ -97,3 +96,8 @@ def inverse_bwt(transformed_data: str, key: int) -> str:
 
     # Retourne la séquence d'origine
     return output
+
+data = 'hello'
+transformed, key = transform_bwt(data)
+print(transformed)
+print(inverse_bwt(transformed, key))

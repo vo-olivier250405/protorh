@@ -71,8 +71,7 @@ def build_frequency_table(data: str) -> dict:
     # Compte les occurences de chaque caractère de la séquence
     frequency_table = Counter(data)
     # Tri la table de fréquences par ordre croissant de fréquences
-    frequency_table = dict(sorted(frequency_table.items(),
-                                  key=lambda item: item[1]))
+    frequency_table = dict(sorted(frequency_table.items(), key=lambda item: item[1]))
     # Retourne la table de fréquences
     return frequency_table
 
