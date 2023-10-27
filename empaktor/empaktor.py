@@ -104,10 +104,27 @@ def recode_file(path: str):
         rewrite_file(decoded, f"{path}/{file}")
 
 
+def check_targz(name: str) -> bool:
+    """
+    Vérifie si le nom du fichier est correct ou pas
+    """
+    for i in range(len(name)):
+        if name[i] == ".":
+            return name[i:] == ".tar.gz"
+    return False
+
+
 def check_arg_compression() -> bool:
     """
     Teste toutes les erreurs possibles
     """
+    for arg in get_files(argv):
+        if arg not in listdir("."):
+            print(f"\n\x1b[31mErreur: \x1b[0m{arg} n'existe pas.")
+            return False
+    if not check_targz(argv[1]):
+        print(f"\n\x1b[31mErreur: \x1b[0m{argv[1]} n'est pas un nom valide.")
+        return False
     if argv[3] not in ["rle", "huffman", "burrows_wheeler"]:
         print(f"\n\x1b[31mErreur: \x1b[0mArgument {argv[3]} non valide.")
         print(f"{argv[3]} n'est pas un algorithme proposé")
@@ -122,7 +139,10 @@ def check_arg_extract() -> bool:
     """
     Vérifie les erreurs pour la décompression
     """
-    if len(argv) != 2:
+    if argv[2] not in listdir("."):
+        print(f"\n\x1b[31mErreur: \x1b[0m{argv[2]} n'existe pas.")
+        return False
+    if len(argv) != 3:
         print(f"\n\x1b[31mErreur: \x1b[0mCe n'est pas la bonne commande\n")
         return False
     return True
@@ -136,7 +156,7 @@ def main() -> bool:
     if argv == ["empaktor.py"]:
         print(f"\n\x1b[31mErreur: \x1b[0mVous n'avez rien saisi\n")
         return False
-    elif len(argv) <= 3:
+    elif len(argv) < 3:
         print(f"\n\x1b[31mErreur: \x1b[0mCe n'est pas la bonne commande\n")
         return False
     elif argv[2] == "--compression":
