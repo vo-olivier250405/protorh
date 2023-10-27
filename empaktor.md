@@ -1,28 +1,75 @@
 # EMPAKTOR
 
-## Qu’est ce que Empaktor  ?
-
-Empaktor est un programme permettant de compresser ou décomprésser un ou plusieurs fichiers.
-Pour cela, celui-ci va utiliser les méthodes suivantes: Huffman, RLE ou Burrows Wheeler.
-Lors de la compression, Empaktor va utiliser l’une des trois méthodes précédentes afin d’encoder le  le ou les fichiers. Cela va les rendre moins long, donc, plus légers.
-À l’inverse, lors de la décompression, on va utiliser la même méthode afin de décoder ces fichiers et les rendre à leur état d’origine.
-Notez qu’Empaktor modifie les fichiers de base lors de la compression et les rencode. N’ayez donc pas peur d’une potentielle perte de données.
-
-## Comment utiliser Empaktor ?  
-### Compression:  
-*Tapez la commande suivante:*  
-```py
-python3 empaktor.py [Nom_archive] --compression [Nom_méthode] [nom_fichier1 nom_fichier2] 
+## Compression
+```shell
+python3 empaktor.py [nom_archive] --compression [algo] [nom_fichier(s)]
 ```
-*Saisissez donc le nom de l’archive à créer, le nom d’une des 3 méthodes de compression, et enfin le ou les fichiers à conpresser.*
+- **Paramètres d'entrée:**  
+    - **nom_archive**: chaine de caractère qui précise le nom de l'archive à créer.
+    - **algo**: nom de la méthode de compression our encoder les fichiers
+    - **nom_fichier(s)**: nom du ou des fichiers à compresser  
 
-### Décompression:  
-*Tapez la commande suivante:*  
-```py
+- **Sortie:** Fichier compréssé *nom_archive*
+- **Description:**  
+  Code le contenu du ou des fichiers avec la méthode spécifiée et renvoi ces mêmes
+  fichiers contenu dans un dossier tar.gz
+- **Exemple:**  
+
+    **Entrée:**  
+    ```shell
+    olivier@olivier-Elimina-Iv-15:~/Documents/compression/group-1015076/empaktor$ ls
+
+    cmp_burrows  cmp_huffman  cmp_rle  empaktor.py	help.txt  test.txt  
+
+    olivier@olivier-Elimina-Iv-15:~/Documents/compression/group-1015076/ empaktor$ 
+    ```  
+    *Commande:*
+    ```shell
+    python3 empaktor.py test.tar.gz --compression rle test.txt
+    ```
+    **Sortie:**
+    ```shell
+    olivier@olivier-Elimina-Iv-15:~/Documents/compression/group-1015076/empaktor$ python3 empaktor.py test.tar.gz --compression rle test.txt
+
+    Compression de: test.txt...
+    Compression de: test.txt dans test.tar.gz: [OK]
+    olivier@olivier-Elimina-Iv-15:~/Documents/compression/group-1015076/empaktor$ ls
+
+    cmp_burrows  cmp_huffman  cmp_rle  empaktor.py	help.txt  test.tar.gz  test.txt
+    ```
+## Décompression  
+```shell
 python3 empaktor.py --extract [nom_archive.tar.gz]
 ```
-*Saisissez seulement le nom de l’archive à extraire*
+- **Paramètres d'entrée:**  
+    - **nom_archive.tar.gz**: Nom du dossier tar.gz à décompresser
 
-**Attention à respecter cette syntaxe, le code ne fonctionnera donc pas sans celle-ci.**
+- **Sortie:** Tout les fichiers contenus dans *nom_archive.ta.gz*
+- **Description:**  
+  Extrait tout les fichiers dans le dossier compressé et rencode tout leur contenu.
 
+- **Exemple:**  
 
+    **Entrée:**  
+    ```shell
+    olivier@olivier-Elimina-Iv-15:~/Documents/compression/group-1015076/empaktor$ ls
+
+    cmp_burrows  cmp_huffman  cmp_rle  empaktor.py	help.txt  test.tar.gz  test.txt
+    ```  
+    *Commande:*
+    ```shell
+    python3 empaktor.py --extract test.tar.gz
+    ```  
+    **Sortie:**  
+    ```shell
+    olivier@olivier-Elimina-Iv-15:~/Documents/compression/group-1015076/empaktor$ python3 empaktor.py --extract test.tar.gz
+
+    Décompression de test.tar.gz...
+    Décompression de test.tar.gz: [OK]
+    Éléments décompréssé(s): ['test.txt']
+    olivier@olivier-Elimina-Iv-15:~/Documents/compression/group-1015076/empaktor$ ls
+    cmp_burrows  cmp_huffman  cmp_rle  empaktor.py	help.txt  test	test.tar.gz  test.txt
+    olivier@olivier-Elimina-Iv-15:~/Documents/compression/group-1015076/empaktor$ ls test
+    test.txt
+    olivier@olivier-Elimina-Iv-15:~/Documents/compression/group-1015076/empaktor$        
+    ```
