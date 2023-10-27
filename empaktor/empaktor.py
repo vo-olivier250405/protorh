@@ -122,7 +122,7 @@ def check_arg_compression() -> bool:
     # Test si la méthode utilisée est valide
     if argv[3] not in ["rle", "huffman", "burrows_wheeler"]:
         print(f"\n\x1b[31mErreur: \x1b[0mArgument {argv[3]} non valide.")
-        print(f"{argv[3]} n'est pas un algorithme proposé")
+        print(f"{argv[3]} n'est pas un algorithme proposé.")
         return False
     # Vérifie si il y a des fihciers à compresser
     elif not get_files(argv):
@@ -141,7 +141,7 @@ def check_arg_extract() -> bool:
         return False
     # Vérifie le nombre correct d'argument
     if len(argv) != 3:
-        print(f"\n\x1b[31mErreur: \x1b[0mCe n'est pas la bonne commande\n")
+        print(f"\n\x1b[31mErreur: \x1b[0mCe n'est pas la bonne commande.\n")
         return False
     return True
 
@@ -151,10 +151,10 @@ def method_manager() -> bool:
     Lance le main pour permettre de décomprésser ou compresser
     """
     if argv == ["empaktor.py"]:
-        print(f"\n\x1b[31mErreur: \x1b[0mVous n'avez rien saisi\n")
+        print(f"\n\x1b[31mErreur: \x1b[0mVous n'avez rien saisi.\n")
         return False
     elif len(argv) < 3:
-        print(f"\n\x1b[31mErreur: \x1b[0mCe n'est pas la bonne commande\n")
+        print(f"\n\x1b[31mErreur: \x1b[0mCe n'est pas la bonne commande.\n")
         return False
     # Vérifie si on veut compresser
     elif argv[2] == "--compression":
@@ -178,12 +178,11 @@ def method_manager() -> bool:
 
 def main() -> None:
     """
-    Fonction qui pertmet de lancer le programme si l'utilisateur ne veux pas
+    Fonction qui permet de lancer le programme si l'utilisateur ne veux pas
     lire le tuto
     """
     if len(argv) != 1 and argv[1] == "--help":
-        data = open_file("help.txt")
-        print(data)
+        print(open_file("help.txt"))
     elif not method_manager():
         print(
             "Tapez: \x1b[32mpython3 empaktor.py --help\x1b[0m pour de l'aide.")
