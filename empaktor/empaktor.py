@@ -10,18 +10,6 @@ from cmp_rle.rle import encode_rle, decode_rle
 from cmp_burrows import burrows_wheeler
 from cmp_huffman import huffman
 
-# data = open_file(argv[1])
-# coded = encode_rle(data=data)
-# decoded = decode_rle(encoded_data=coded)
-#
-# rewrite_file(filter_txt(coded), argv[1])
-#
-# # Compresse
-# compress("test.tar.gz", "cmp_rle/test.txt")
-# # Décompresse
-# uncompress("test.tar.gz")
-# rewrite_file(decoded, "test.tar/cmp_rle/test.txt")
-
 
 def open_file(name: str) -> str:
     """
@@ -125,11 +113,14 @@ def check_arg_compression() -> bool:
     if not check_targz(argv[1]):
         print(f"\n\x1b[31mErreur: \x1b[0m{argv[1]} n'est pas un nom valide.")
         return False
+    if len(argv) == 3:
+        print(f"\n\x1b[31mErreur: \x1b[0mCommande non valide.")
+        return False
     if argv[3] not in ["rle", "huffman", "burrows_wheeler"]:
         print(f"\n\x1b[31mErreur: \x1b[0mArgument {argv[3]} non valide.")
         print(f"{argv[3]} n'est pas un algorithme proposé")
         return False
-    elif get_files(argv) == []:
+    elif not get_files(argv):
         print(f"\n\x1b[31mErreur: \x1b[0mLes fichiers n'existent pas.")
         return False
     return True
@@ -148,7 +139,7 @@ def check_arg_extract() -> bool:
     return True
 
 
-def main() -> bool:
+def method_manager() -> bool:
     """
     Lance le main pour permettre de décomprésser ou compresser
     """
@@ -178,5 +169,17 @@ def main() -> bool:
         return False
 
 
-if not main():
-    print("Tapez: \x1b[32mpython3 empaktor.py --help\x1b[0m pour de l'aide.")
+def main() -> None:
+    """
+    Fonction qui pertmet de lancer le programme si l'utilisateur ne veux pas
+    regarder le tuto
+    """
+    if len(argv) != 1 and argv[1] == "--help":
+        data = open_file("help.txt")
+        print(data)
+    elif not method_manager():
+        print(
+            "Tapez: \x1b[32mpython3 empaktor.py --help\x1b[0m pour de l'aide.")
+
+
+main()
