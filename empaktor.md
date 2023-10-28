@@ -62,7 +62,7 @@ python3 empaktor.py --extract [nom_archive.tar.gz]
     ```  
     **Sortie:**  
     ```shell
-    olivier@olivier-Elimina-Iv-15:~/Documents/compression/group-1015076/empaktor$ python3 empaktor.py --extract test.tar.gz
+    olivier@olivier-Elimina-Iv-15:~/Documents/compression/group-1015076/empaktor$ python3 empaktor.py --extract rle test.tar.gz
 
     Décompression de test.tar.gz...
     Décompression de test.tar.gz: [OK]

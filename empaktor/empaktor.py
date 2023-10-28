@@ -134,13 +134,18 @@ def check_arg_compression() -> bool:
 def check_arg_extract() -> bool:
     """
     Vérifie les erreurs pour la décompression
+    python3 0empaktor.py 1--extract 2rle 3nom_archive.tar.gz
     """
+    if argv[2] not in ["rle", "huffman", "burrows_wheeler"]:
+        print(f"\n\x1b[31mErreur: \x1b[0mArgument {argv[2]} non valide.")
+        print(f"{argv[2]} n'est pas un algorithme proposé.")
+        return False
     # Vérifie la présence du dossier à compresser
-    if argv[2] not in listdir("."):
-        print(f"\n\x1b[31mErreur: \x1b[0m{argv[2]} n'existe pas.")
+    if argv[3] not in listdir("."):
+        print(f"\n\x1b[31mErreur: \x1b[0m{argv[3]} n'existe pas.")
         return False
     # Vérifie le nombre correct d'argument
-    if len(argv) != 3:
+    if len(argv) != 4:
         print(f"\n\x1b[31mErreur: \x1b[0mCe n'est pas la bonne commande.\n")
         return False
     return True
@@ -153,7 +158,7 @@ def method_manager() -> bool:
     if argv == ["empaktor.py"]:
         print(f"\n\x1b[31mErreur: \x1b[0mVous n'avez rien saisi.\n")
         return False
-    elif len(argv) < 3:
+    elif len(argv) < 4:
         print(f"\n\x1b[31mErreur: \x1b[0mCe n'est pas la bonne commande.\n")
         return False
     # Vérifie si on veut compresser
@@ -166,7 +171,7 @@ def method_manager() -> bool:
     elif argv[1] == "--extract":
         valid: bool = check_arg_extract()
         if valid:
-            path = uncompress(argv[2])
+            path = uncompress(argv[3])
             recode_file(path)
         return valid
     # Vérifie les erreurs
