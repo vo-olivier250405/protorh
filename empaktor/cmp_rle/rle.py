@@ -27,7 +27,7 @@ def encode_rle(data) -> str:
         # d'occurence
         # On rajoute des délimiteurs afin de pouvoir distinguer
         #  le nombre d'occurence et les chiffres (considérés comme caractères)
-        res += f"{str(count)}/{temp[index]}|"
+        res += f"{str(count)}¬{temp[index]}╦"
         index += 1
     return res
 
@@ -44,9 +44,9 @@ def decode_rle(encoded_data) -> str:
     for i in range(len(temp) - 1):
         # Vérifie si le caractère suivant n'est pas un délimiteur
         # et ajoute les valeurs
-        if temp[i].isdigit() and temp[i + 1] != "|":
+        if temp[i].isdigit() and temp[i + 1] != "╦":
             num += temp[i]
-        elif temp[i] == "/":
+        elif temp[i] == "¬":
             res += temp[i + 1] * int(num)
             num = ""
     return res
