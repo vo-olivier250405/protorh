@@ -18,7 +18,7 @@
    ║      Compression:                                                                                                                                                                   ║
    ║         Tapez la commande suivante:                                                                                                                                                 ║
    ║             ╔════════════════════════════════════════════════════════════════════════════════════════════╗                                                                          ║
-   ║         🖥️   ║  python3 empaktor.py [Nom_archive] --compression [Nom_méthode] [nom_fichier1 nom_fichier2] ║                                                                          ║
+   ║         🖥️   ║  python3 empaktor.py [Nom_archive] --compression [Nom_méthode] [nom_fichier1 nom_fichier2]║                                                                          ║
    ║             ╚════════════════════════════════════════════════════════════════════════════════════════════╝                                                                          ║
    ║                                                                                                                                                                                     ║
    ║ Saisissez donc le nom de l’archive à créer, le nom d’une des 3 méthodes de compression, et enfin le ou les fichiers à conpresser.                                                   ║                       
@@ -26,7 +26,7 @@
    ║      Décompression:                                                                                                                                                                 ║
    ║         Tapez la commande suivante:                                                                                                                                                 ║
    ║             ╔═════════════════════════════════════════════════════════════════════╗                                                                                                 ║
-   ║         🖥️   ║  python3 empaktor.py --extract [nom_méthode] [nom_archive.tar.gz]   ║                                                                                                 ║
+   ║         🖥️   ║  python3 empaktor.py --extract [nom_méthode] [nom_archive.tar.gz]  ║                                                                                                 ║
    ║             ╚═════════════════════════════════════════════════════════════════════╝                                                                                                 ║ 
    ║                                                                                                                                                                                     ║
    ║ Saisissez le nom de l’archive à extraire ainsi que le nom de la méthode de décodage.                                                                                                ║     

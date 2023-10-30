@@ -96,8 +96,3 @@ def inverse_bwt(transformed_data: str, key: int) -> str:
 
     # Retourne la séquence d'origine
     return output
-
-data = 'hello'
-transformed, key = transform_bwt(data)
-print(transformed)
-print(inverse_bwt(transformed, key))

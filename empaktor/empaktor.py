@@ -32,14 +32,6 @@ def rewrite_file(txt: str, name: str) -> None:
         file.close()
 
 
-def filter_txt(name: str) -> str:
-    """
-    Retire tout les délimiteurs
-    """
-    name = name.replace("/", "").replace("|", "")
-    return name
-
-
 def compress(name: str, folder: list) -> None:
     """
     Fonction qui prend en paramètre le nom du fichier à compresser et
