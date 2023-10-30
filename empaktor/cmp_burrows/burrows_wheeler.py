@@ -2,6 +2,7 @@
 Gestion de la transformation selon Burrows-Wheeler (BWT).
 '''
 
+
 def transform_bwt(data: str) -> (str, int):
     '''
     Applique la transformation Burrows-Wheeler (BWT) à une séquence de données.
@@ -32,7 +33,7 @@ def transform_bwt(data: str) -> (str, int):
 
     # Trie la liste bwt
     bwt = sorted(bwt)
-    print(bwt)
+    # print(bwt)
     # Initialise une chaîne de caractères vide pour stocker la séquence
     # transformée
     output = ''
@@ -44,6 +45,7 @@ def transform_bwt(data: str) -> (str, int):
         output = output + rotation[-1]
     # Retourne la séquence transformée ainsi que la clé
     return output, bwt.index(data)
+
 
 def inverse_bwt(transformed_data: str, key: int) -> str:
     '''

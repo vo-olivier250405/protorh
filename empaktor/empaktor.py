@@ -4,10 +4,10 @@ Module qui va compresser les fichiers à l'aide d'une des 3 méthodes.
 
 from sys import argv
 from os import listdir, remove
-import tarfile
+from tarfile import open as tf_open
 # from base64 import b64encode
 from cmp_rle.rle import encode_rle, decode_rle
-from cmp_burrows import burrows_wheeler
+from cmp_burrows.burrows_wheeler import inverse_bwt, transform_bwt
 from cmp_huffman.huffman import compress_data, decompress_data
 from json import dump, loads
 
@@ -38,7 +38,7 @@ def compress(name: str, folder: list, method: str) -> None:
     Fonction qui prend en paramètre le nom du fichier à compresser et
     en crée une archive
     """
-    with tarfile.open(name, "w:gz") as temp:
+    with tf_open(name, "w:gz") as temp:
         for files in folder:
             print(f"\nCompression de: {files}...")
 
@@ -49,9 +49,9 @@ def compress(name: str, folder: list, method: str) -> None:
                 temp.add(files)
                 rewrite_file(decoded, files)
 
-            elif method == "huffman":
-                coded = compress_data(data=open_file(files))
-                decoded = decompress_data(coded[0], coded[1])
+            elif method in ["huffman", "burrows_wheeler"]:
+                coded = coded_datas(method, files)[0]
+                decoded = coded_datas(method, files)[1]
                 rewrite_file(coded[0], files)
                 temp.add(files)
                 rewrite_file(decoded, files)
@@ -60,11 +60,22 @@ def compress(name: str, folder: list, method: str) -> None:
                     file.close()
                 temp.add(".codes.json")
                 remove(".codes.json")
-            else:
-                pass
-            # temp.add(rewrite_file(filter_txt(coded), files))
+
             print(f"Compression de: {files} dans {name}: [\x1b[32mOK\x1b[0m]")
         temp.close()
+
+
+def coded_datas(method: str, files: str):
+    """
+    Renvoie les données en fonction de la méthode
+    """
+    if method == "huffman":
+        coded = compress_data(data=open_file(files))
+        decoded = decompress_data(coded[0], coded[1])
+    else:
+        coded = transform_bwt(data=open_file(files))
+        decoded = inverse_bwt(coded[0], coded[1])
+    return coded, decoded
 
 
 def uncompress(name: str) -> None:
@@ -72,7 +83,7 @@ def uncompress(name: str) -> None:
     Fonction qui décomppresse l'archive
     """
     print(f"\nDécompression de {name}...")
-    with tarfile.open(name) as file:
+    with tf_open(name) as file:
         file.extractall(f"./{name[:-7]}")
         print(f"Décompression de {name}: [\x1b[32mOK\x1b[0m]")
         print(f"Éléments décompréssé(s): {file.getnames()}")
@@ -94,16 +105,16 @@ def recode_file(path: str, method: str):
     """
     Recode le fichier après la décompression
     """
+    methods = {"huffman": decompress_data, "burrows_wheeler": inverse_bwt}
     for file in listdir(path):
         data = open_file(f"{path}/{file}")
-        if method == "rle":
-            decoded = decode_rle(encoded_data=data)
-        elif method == "huffman" and file == ".codes.json":
+        if method in ["huffman", "burrows_wheeler"] and file == ".codes.json":
             data = loads(open_file(path + "/.codes.json"))
-            decoded = decompress_data(data["msg"], data["code"])
-        else:
-            pass
+            decoded = methods[method](data["msg"], data["code"])
+        elif method == "rle":
+            decoded = decode_rle(encoded_data=data)
         rewrite_file(decoded, f"{path}/{file}")
+    remove(path + "/.codes.json")
 
 
 def check_targz(name: str) -> bool:
