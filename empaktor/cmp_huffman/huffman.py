@@ -127,8 +127,8 @@ def compress_data(data: str) -> (str, Node):
     Args:
         data (str): Séquence de données à encoder.
     Return:
-        str: Séquence de données encodée.
-        Node: Racine de l'arbre binaire utilisé
+        str: Séquence de données encodée
+        dict: Dictionnaire associant chaque caractère à son code binaire
     '''
 
     # Construction de la table de fréquences des caractères présents dans la
@@ -140,18 +140,41 @@ def compress_data(data: str) -> (str, Node):
 
     # Construction de la table de fréquences des caractères présents dans la
     # séquence à encoder
-    encoded_data = {}
-    build_codes(tree, '', encoded_data)
+    codes = {}
+    build_codes(tree, '', codes)
 
     # Initialise une chaîne de caractères vide pour stocker la séquence encodée
     output = ''
     for char in data:
-        output = output + encoded_data[char]
+        output = output + codes[char]
     # Retourne la séquence encodée
-    return output, tree
+    return output, codes
 
 
-def decompress_data(compressed_data: str, root: Node) -> str:
+def decompress_data(compressed_data: str, codes: dict):
+    '''
+    Décode une séquence de données selon le codage de Huffman.
+    Args:
+        compressed_data (str): Séquence de données encodée
+        codes (dict): Dictionnaire associant chaque caractère à son code binaire
+    Return:
+        str: Séquence de données décodée
+    '''
+
+    decompressed_data = ''
+    buffer: str = ''
+
+    for char in compressed_data:
+        buffer = buffer + char
+        for code in codes.keys():
+            if codes[code] == buffer:
+                decoded_char = code
+                decompressed_data = decompressed_data + decoded_char
+                buffer = ''
+    return decompressed_data
+
+
+def decompress_data_old(compressed_data: str, root: dict) -> str:
     decompressed_data = ''
     current_node = root
 
