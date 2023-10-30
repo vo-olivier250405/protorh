@@ -3,12 +3,13 @@ Module qui va compresser les fichiers à l'aide d'une des 3 méthodes.
 """
 
 from sys import argv
-from os import listdir
+from os import listdir, remove
 import tarfile
 # from base64 import b64encode
 from cmp_rle.rle import encode_rle, decode_rle
 from cmp_burrows import burrows_wheeler
-from cmp_huffman import huffman
+from cmp_huffman.huffman import compress_data, decompress_data
+from json import dump, loads
 
 
 def open_file(name: str) -> str:
@@ -32,7 +33,7 @@ def rewrite_file(txt: str, name: str) -> None:
         file.close()
 
 
-def compress(name: str, folder: list) -> None:
+def compress(name: str, folder: list, method: str) -> None:
     """
     Fonction qui prend en paramètre le nom du fichier à compresser et
     en crée une archive
@@ -40,11 +41,27 @@ def compress(name: str, folder: list) -> None:
     with tarfile.open(name, "w:gz") as temp:
         for files in folder:
             print(f"\nCompression de: {files}...")
-            coded = encode_rle(data=open_file(files))
-            decoded = decode_rle(encoded_data=coded)
-            rewrite_file(coded, files)
-            temp.add(files)
-            rewrite_file(decoded, files)
+
+            if method == "rle":
+                coded = encode_rle(data=open_file(files))
+                decoded = decode_rle(encoded_data=coded)
+                rewrite_file(coded, files)
+                temp.add(files)
+                rewrite_file(decoded, files)
+
+            elif method == "huffman":
+                coded = compress_data(data=open_file(files))
+                decoded = decompress_data(coded[0], coded[1])
+                rewrite_file(coded[0], files)
+                temp.add(files)
+                rewrite_file(decoded, files)
+                with open(".codes.json", "w", encoding="utf-8") as file:
+                    dump({"msg": coded[0], "code": coded[1]}, file)
+                    file.close()
+                temp.add(".codes.json")
+                remove(".codes.json")
+            else:
+                pass
             # temp.add(rewrite_file(filter_txt(coded), files))
             print(f"Compression de: {files} dans {name}: [\x1b[32mOK\x1b[0m]")
         temp.close()
@@ -73,13 +90,19 @@ def get_files(argvs: list) -> list:
     return file_add
 
 
-def recode_file(path: str):
+def recode_file(path: str, method: str):
     """
     Recode le fichier après la décompression
     """
     for file in listdir(path):
         data = open_file(f"{path}/{file}")
-        decoded = decode_rle(encoded_data=data)
+        if method == "rle":
+            decoded = decode_rle(encoded_data=data)
+        elif method == "huffman" and file == ".codes.json":
+            data = loads(open_file(path + "/.codes.json"))
+            decoded = decompress_data(data["msg"], data["code"])
+        else:
+            pass
         rewrite_file(decoded, f"{path}/{file}")
 
 
@@ -156,14 +179,14 @@ def method_manager() -> bool:
     if argv[2] == "--compression":
         valid: bool = check_arg_compression()
         if valid:
-            compress(argv[1], get_files(argv))
+            compress(argv[1], get_files(argv), argv[3])
         return valid
     # Vérifie si l'on veut décompresser
     if argv[1] == "--extract":
         valid: bool = check_arg_extract()
         if valid:
             path = uncompress(argv[3])
-            recode_file(path)
+            recode_file(path, argv[2])
         return valid
     # Vérifie les erreurs
     print(f"\n\x1b[31mErreur: \x1b[0mArgument {argv[2]} non valide.")
