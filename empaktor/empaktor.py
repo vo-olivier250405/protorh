@@ -6,10 +6,10 @@ from sys import argv
 from os import listdir, remove
 from tarfile import open as tf_open
 # from base64 import b64encode
+from json import dump, loads
 from cmp_rle.rle import encode_rle, decode_rle
 from cmp_burrows.burrows_wheeler import inverse_bwt, transform_bwt
 from cmp_huffman.huffman import compress_data, decompress_data
-from json import dump, loads
 
 
 def open_file(name: str) -> str:
@@ -121,7 +121,7 @@ def check_targz(name: str) -> bool:
     """
     Vérifie si le nom du fichier est correct ou pas
     """
-    for i in range(len(name)):
+    for i, index in enumerate(name):
         if name[i] == ".":
             return name[i:] == ".tar.gz"
     return False
