@@ -55,14 +55,24 @@ def compress(name: str, folder: list, method: str) -> None:
                 rewrite_file(coded[0], files)
                 temp.add(files)
                 rewrite_file(decoded, files)
-                with open(".codes.json", "w", encoding="utf-8") as file:
+                with open(f".{files}.json", "w", encoding="utf-8") as file:
                     dump({"msg": coded[0], "code": coded[1]}, file)
                     file.close()
-                temp.add(".codes.json")
-                remove(".codes.json")
+                temp.add(f".{files}.json")
+                remove(f".{files}.json")
 
             print(f"Compression de: {files} dans {name}: [\x1b[32mOK\x1b[0m]")
         temp.close()
+
+
+def check_if_exists(path: str, name: str):
+    """
+    Vérifie si le fichier est existant dans le répértoire
+    """
+    for element in listdir(path):
+        if element == name:
+            return True
+    return False
 
 
 def coded_datas(method: str, files: str):
@@ -108,13 +118,16 @@ def recode_file(path: str, method: str):
     methods = {"huffman": decompress_data, "burrows_wheeler": inverse_bwt}
     for file in listdir(path):
         data = open_file(f"{path}/{file}")
-        if method in ["huffman", "burrows_wheeler"] and file == ".codes.json":
-            data = loads(open_file(path + "/.codes.json"))
+        if method in ["huffman", "burrows_wheeler"] and file[-5:] != ".json":
+            data = loads(open_file(path + f"/.{file}.json"))
             decoded = methods[method](data["msg"], data["code"])
+            remove(path + f"/.{file}.json")
+
         elif method == "rle":
             decoded = decode_rle(encoded_data=data)
-        rewrite_file(decoded, f"{path}/{file}")
-    remove(path + "/.codes.json")
+
+        if file[-5:] != ".json":
+            rewrite_file(decoded, f"{path}/{file}")
 
 
 def check_targz(name: str) -> bool:
