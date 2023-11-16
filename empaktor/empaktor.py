@@ -49,7 +49,7 @@ def method_manager() -> bool:
         print("\n\x1b[31mErreur: \x1b[0mVous n'avez rien saisi.\n")
         return False
 
-    if len(argv) < 4:
+    if len(argv) < 3:
         print("\n\x1b[31mErreur: \x1b[0mCommande incorrecte.\n")
         return False
 
@@ -114,24 +114,20 @@ def check_compression_args() -> bool:
 
 def check_extraction_args() -> bool:
     """
+    python3 empaktor.py --extract rle.tar.gz
+
     Vérifie si les arguments liés à la décompression sont valides ou non.
     Return:
         - bool: True si les arguments sont valides, False sinon
     """
 
-    # Vérifie si la méthode de décompression souhaitée est valide
-    if argv[2] not in ["rle", "huffman", "burrows_wheeler"]:
-        print(f"\n\x1b[31mErreur: \x1b[0mArgument {argv[2]} non valide.")
-        print(f"{argv[2]} n'est pas un algorithme proposé.")
-        return False
-
     # Vérifie si le fichier à décompresser existe
-    if not os_path.exists(argv[3]):
-        print(f"\n\x1b[31mErreur: \x1b[0m{argv[3]} n'existe pas.")
+    if not os_path.exists(argv[2]):
+        print(f"\n\x1b[31mErreur: \x1b[0m{argv[2]} n'existe pas.")
         return False
 
     # Vérifie si le nombre d'arguments est correct
-    if len(argv) != 4:
+    if len(argv) != 3:
         print("\n\x1b[31mErreur: \x1b[0mCe n'est pas la bonne commande.\n")
         return False
     return True
