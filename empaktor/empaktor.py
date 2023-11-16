@@ -2,13 +2,17 @@
 Module principal du programme empaktor, il est le gestionnaire de compression.
 """
 
-from os import path as os_path, walk, remove
+from json import dump, loads
+from os import path as os_path, remove, makedirs, rmdir, walk
+from re import match as re_match
+from shutil import rmtree
 from sys import argv
 from tarfile import open as tar_open
-from json import dump, loads
-from cmp_rle.rle import *
+
 from cmp_burrows.burrows_wheeler import *
 from cmp_huffman.huffman import compress_data, decompress_data
+from cmp_rle.rle import *
+
 
 def read_file(path: str) -> str:
     """
@@ -21,7 +25,6 @@ def read_file(path: str) -> str:
 
     with open(path, "r", encoding="utf-8") as file:
         data = file.read()
-        file.close()
     return data
 
 
@@ -36,7 +39,6 @@ def overwrite_file(path: str, data: str):
     with open(path, "a", encoding="utf-8") as file:
         file.truncate(0)
         file.write(data)
-        file.close()
 
 
 def method_manager() -> bool:
@@ -60,7 +62,7 @@ def method_manager() -> bool:
         valid: bool = check_extraction_args()
         if valid:
             path = extract(argv[3])
-            decode_file(path, argv[2])
+            decode_files(path)
         return valid
 
     # Vérifie les erreurs
@@ -91,13 +93,13 @@ def check_compression_args() -> bool:
     if len(argv) == 3:
         print("\n\x1b[31mErreur: \x1b[0mCommande non valide.")
         return False
-    
+
     # Vérifie si la méthode de compression souhaitée est valide
     if argv[3] not in ["rle", "huffman", "burrows_wheeler"]:
         print(f"\n\x1b[31mErreur: \x1b[0mArgument {argv[3]} non valide.")
         print(f"{argv[3]} n'est pas un algorithme proposé.")
         return False
-    
+
     # Vérifie si il y a des fihciers à compresser
     if not get_files_from_args():
         print("\n\x1b[31mErreur: \x1b[0mLes fichiers n'existent pas.")
@@ -154,9 +156,7 @@ def check_target_path(path: str) -> int:
     """
 
     parts = path.split(".")
-    if (len(parts) > 2 and parts[-1] == "gz" and parts[-2] == "tar"):
-        return True
-    return False
+    return len(parts) > 2 and parts[-2] == "tar" and parts[-1] == "gz"
 
 
 def compress_files(target: str, files: list, method: str):
@@ -176,14 +176,10 @@ def compress_files(target: str, files: list, method: str):
                 if os_path.isdir(file_or_dir):
                     for dir_path, dirnames, file_names in walk(file_or_dir):
                         for file in file_names:
-                            print("isDir")
                             compress_file(os_path.join(dir_path, file), method, tar)
 
                 else:
-                    file = file_or_dir
-                    compress_file(file, method, tar)
-
-            tar.close()
+                    compress_file(file_or_dir, method, tar)
 
     except Exception as exception:
         print(f"\n\x1b[31mErreur: \x1b[0mÉchec lors de la compression: {exception}")
@@ -192,62 +188,75 @@ def compress_files(target: str, files: list, method: str):
 def compress_file(file: str, method: str, tar):
     print(f"Compression de: {file}...")
 
-    match method:
-        case "rle":
-            decoded_data = read_file(file)
-            overwrite_file(file, encode_rle(decoded_data))
-            tar.add(file, arcname=os_path.relpath(file))
-            overwrite_file(file, decoded_data)
+    temp_folder_path = os_path.join(os_path.dirname(os_path.abspath(__file__)), 'temp')
+    makedirs(temp_folder_path, exist_ok=True)
 
-        case _:
-            raise Exception("Méthode de compression non valide.")
+    temp_file_path = os_path.join(temp_folder_path, os_path.basename(file))
+
+    with open(temp_file_path, "w", encoding="utf-8") as temp_file:
+        match method:
+            case "rle": coded = encode_rle(read_file(file))
+            case "burrows_wheeler":  coded, key = transform_bwt(read_file(file))
+            case "huffman": coded, key = compress_data(read_file(file))
+            case _: raise Exception("Méthode de compression non valide.")
+
+        temp_file.write(coded)
+    tar.add(temp_file_path, arcname=os_path.relpath(file))
+
+    if method in ["burrows_wheeler", "huffman"]:
+        json_name =  '.' + os_path.basename(file) + '.json'
+        temp_file_path = os_path.join(temp_folder_path, json_name)
+        with open(temp_file_path, "w", encoding="utf-8") as temp_file:
+            dump({"code": key}, temp_file)
+        json_file_path = os_path.relpath(os_path.join(os_path.dirname(file), json_name))
+        tar.add(temp_file_path, arcname=json_file_path)
+
+    rmtree(temp_folder_path)
 
 
-def extract(path: str):
+def extract(path: str) -> str:
     """
     Décompresse une archive compressée avec empaktor.
     Args:
         - path(str): Chemin de l'archive à décompresser
     """
 
-    print(f"\nDécompression de {path}...")
+    with tar_open(path) as tar:
+        path = os_path.basename(path)
+        parts = path.split(".")
+        parts = parts[:-2]
+        path = ".".join(parts)
+        path = f"./{path}/"
+        tar.extractall(path)
 
-    try:
-        with tar_open(path) as tar:
-            tar.extractall(f"./{path[:-7]}")
-            print(f"Décompression de {path}: [\x1b[32mOK\x1b[0m]")
-            print(f"Éléments décompréssé(s): {tar.getnames()}")
-            tar.close()
-        return f"./{path[:-7]}"
-
-    except Exception as exception:
-        print(f"\n\x1b[31mErreur: \x1b[0mÉchec lors de la compression: {exception}")
+    return path
 
 
-def decode_file(path: str, method: str):
-    """
-    Décode les fichiers encodés après la décompressions selon la méthode
-    choisie.
-    Args:
-        - path(str): Chemin du dossier à décompresser
-        - method(str): Méthode de compression utilisée
-    """
-    methods = {"huffman": decompress_data, "burrows_wheeler": inverse_bwt}
-
+def decode_files(path: str):
     for dir_path, dirnames, file_names in walk(path):
         for file in file_names:
-            file_path = os_path.join(dir_path, file)
-            data = read_file(file_path)
-            if method in ["huffman", "burrows_wheeler"] and file[-5:] != ".json":
-                data = loads(read_file(dir_path + f"/.{file}.json"))
-                decoded = methods[method](data["msg"], data["code"])
-                remove(dir_path= + f"/.{file}.json")
-
-            elif method == "rle":
-                decoded = decode_rle(encoded_data=data)
-
-            if file[-5:] != ".json":
-                overwrite_file(file_path, decoded)
+            if not re_match(r'^\..*\.json$', file):
+                print(file)
+                json_file_path = os_path.join(dir_path, '.' + file + '.json')
+                if os_path.exists(json_file_path):
+                    json_data = loads(read_file(json_file_path))
+                    if 'code' in json_data:
+                        if isinstance(json_data['code'], int):
+                            file_path = os_path.join(dir_path, file)
+                            coded = read_file(file_path)
+                            overwrite_file(file_path, inverse_bwt(coded, json_data['code']))
+                            remove(json_file_path)
+                        elif isinstance(json_data['code'], dict):
+                            file_path = os_path.join(dir_path, file)
+                            coded = read_file(file_path)
+                            overwrite_file(file_path, decompress_data(coded, json_data['code']))
+                            remove(json_file_path)
+                    else:
+                        raise Exception("Fichier JSON invalide.")
+                else:
+                    file_path = os_path.join(dir_path, file)
+                    coded = read_file(file_path)
+                    overwrite_file(file_path, decode_rle(coded))
 
 
 def main():
