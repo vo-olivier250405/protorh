@@ -64,7 +64,7 @@ def method_manager() -> bool:
     if argv[1] == "--extract":
         valid: bool = check_extraction_args()
         if valid:
-            path = extract(argv[3])
+            path = extract(argv[2])
             decode_files(path)
         return valid
 
