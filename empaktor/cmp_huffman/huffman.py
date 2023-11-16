@@ -7,12 +7,15 @@ from collections import Counter
 
 
 class Node:
+    """
+    Noeuds d'arbre binaire
+    """
+
     def __init__(self, char: str, frequency: dict):
         self.char = char
         self.frequency = frequency
         self.left_child = None
         self.right_child = None
-
 
     def __eq__(self, other):
         return self.frequency == other.frequency
@@ -77,7 +80,7 @@ def build_frequency_table(data: str) -> dict:
     return frequency_table
 
 
-def build_codes(node: Node, prefix: str = '', code = None):
+def build_codes(node: Node, prefix: str = '', code=None):
     """
     Génère le code binaire correspondant à chacun des nœuds de l'arbre de
     Huffman et stocke ces codes dans un dictionnaire.
@@ -103,6 +106,13 @@ def build_codes(node: Node, prefix: str = '', code = None):
 
 
 def display_huffman_tree(node, indent="", last=True):
+    """
+    Affiche l'arbre binaire
+    Args:
+        - node (Node): Le noeud de l'arbre actuellement exploré.
+        - last (bool): 
+        - indent (str): Indente les nœuds pour plus de visibilité
+    """
     if node is not None:
         print(indent, end="")
         if last:
@@ -176,6 +186,16 @@ def decompress_data(compressed_data: str, codes: dict):
 
 
 def decompress_data_old(compressed_data: str, root: dict) -> str:
+    """
+    Décode une séquence de données selon le codage de Huffman, et la racine de
+    l'arbre.
+    Args:
+        compressed_data (str): Séquence de données encodée
+        codes (dict): Dictionnaire associant chaque caractère à son
+         code binaire
+    Return:
+        str: Séquence de données décodée
+    """
     decompressed_data = ''
     current_node = root
 
