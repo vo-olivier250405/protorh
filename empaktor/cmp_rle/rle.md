@@ -1,33 +1,24 @@
 # Run-Length Encoding
 
-**Prototypes:**
-
+## Codage
 ```py
-def encode_rle(data):
+def encode_rle(data: str) -> str
 ```
-
-- **Paramètre entrée:** chaine de caractères que l'on va coder
-- **Sortie:** chaine de caractères codée
-- **Description:**  
-  Renvoie une autre chaine de caractère codée. Chaque nombre qui précède une lettre est le nombre d'occurences consécutives de cette lettre.
+- **Entrée:** Séquence de données à encoder
+- **Sortie:** Séquence de données encodée
+- **Description:** Encode une séquence de données selon le codage RLE.
 - **Exemple:**
-
 ```py
-encode_rle("QQA") -> "2Q1A"
+encode_rle('QQA') -> '2Q1A'
 ```
-# 
-
+## Décodage
 ```py
-def decode_rle(encoded_data):
+def decode_rle(encoded_data: str) -> str
 ```
-
-- **Paramètre entrée:** chaine de caractères que l'on va décoder
-- **Sortie:** chaine de caractères décodée
-- **Description:**  
-  Renvoie une autre chaine de caractère décodée. Prend le nombre n qui précède
-  chaque lettre et ajoute n fois la lettre dans la variable de réultat
+- **Entrée:** Séquence de données encodée
+- **Sortie:** Séquence de données à encoder
+- **Description:** Décode une séquence de données selon le codage RLE.
 - **Exemple:**
-
 ```py
-decode_rle("2Q1A") -> "QQA"
+decode_rle('2Q1A') -> 'QQA'
 ```
